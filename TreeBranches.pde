@@ -20,10 +20,8 @@ void draw() {
 void mousePressed() {
   // Clear window and generate a new tree from the mouse position
   //background(0,0,256);
-  for (int i = 0; i < 50; i ++) {
-    root = new Node(mouseX,mouseY,null,0);
+  root = new Node(mouseX,mouseY,null,0);
   root.render();
-  }
 }
 
 void keyPressed() {
@@ -46,7 +44,7 @@ private class Node {
   private float x, y;
   // The maximum depth of the tree
   // Created in order to limit random generation of tree
-  private int maxTier = 1;
+  private final int maxTier = 7;
   
   // Constructor for the tree
   // Should only be called once for the root. The rest of the 
@@ -75,8 +73,10 @@ private class Node {
       // Scale r with tier
       float radius = random(200/(.75*tier+1),500/(.9*tier+1));
       float theta = random(0,2*PI);
-      println(force(new PVector(this.x,this.y)));
-      theta = (3*theta + direct(force(new PVector(this.x, this.y)).normalize(null)))/4;
+      
+      // This code not quite working yet.
+      //theta = (3*theta + direct(force(new PVector(this.x, this.y)).normalize(null)))/4;
+      
       PVector newPos = new PVector(radius*cos(theta)+x,radius*sin(theta)+y);
       if (newPos.x < 0) {
         newPos.x = 0;
@@ -88,11 +88,6 @@ private class Node {
       }else if (newPos.y > high) {
         newPos.y = high; 
       }
-      // Apply the centering force to each point
-      /*
-      PVector forces = force(newPos);
-      newPos.add(forces);
-      */
       // Assign them with this as parent and one higher tier
       children.add(new Node(newPos.x, 
                             newPos.y,
@@ -110,7 +105,7 @@ private class Node {
                         - pow((point.y - high/2) * 4.5/high,5) );
   }
   
-  //Returns the heading of the vector direction.
+  // Returns the heading of the vector direction.
   // PVector.heading() doesn't work for this editon
   float direct(PVector direction) {
     PVector xHat = new PVector(1,0);
@@ -124,12 +119,8 @@ private class Node {
       children.get(i).render(); 
     }
     stroke(0,110,tier*256/maxTier);
-    fill(0,110,tier*250/maxTier);
-    //stroke(155,110,tier*256/maxTier);
-    //fill(155,110,tier*250/maxTier);
-    //ellipse(x,y,1,1);
-    
-    //ellipse(x,y,ceil(float(20)/(tier+1)),ceil(float(20)/(tier+1)));
+    fill(0,110,tier*250/maxTier);    
+    ellipse(x,y,ceil(float(20)/(tier+1)),ceil(float(20)/(tier+1)));
     // Draw a line from this Node to its parent
     if (parent != null) {
       line(x,y,parent.getX(), parent.getY());
